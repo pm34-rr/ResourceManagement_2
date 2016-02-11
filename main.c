@@ -4,14 +4,22 @@
 #include <unistd.h>
 #include <stdio.h>
 
-const int CURRENT_DIR_SIZE = 1024;
-
+/*!
+ * \brief Структура для представления файла
+ */
 struct file
 {
 	char *	name;
 	int		length;
 };
 
+/*!
+ * \brief Сортировка массива данных
+ * \param files Массив данных
+ * \param filesSize Размер массива
+ *
+ * \details Сортирует массив данных методов вставки.
+ */
 void sort( struct file files[], int filesSize )
 {
 	for ( int i = 0; i < filesSize; ++i ) {
@@ -24,6 +32,9 @@ void sort( struct file files[], int filesSize )
 	}
 }
 
+/*!
+ * \brief Вывод шапки таблицы
+ */
 void printHead()
 {
 	char nameStr[] = "Name";
@@ -32,12 +43,17 @@ void printHead()
 	printf( "%s\n", sizeStr );
 }
 
+/*!
+ * \brief Вывод массива данных
+ * \param files Массив данных
+ * \param filesSize Размер массива
+ */
 void printArray( struct file files[], int filesSize )
 {
 	if ( filesSize == 0 )
 		return;
 
-	char isFile = (files[0].length > -1);
+	char isFile = (files[0].length != -1);
 	for ( int i = 0; i < filesSize; ++i ) {
 		printf( "%-*s", 30, files[i].name );
 		if ( isFile )
@@ -51,9 +67,13 @@ int main()
 {
 	struct dirent * currentFile;
 	struct stat fileInfo;
+	const int CURRENT_DIR_SIZE = 1024;
+
 	char currentDirName[CURRENT_DIR_SIZE];
+	//! Получение имени текущей дериктории
 	getcwd( currentDirName, CURRENT_DIR_SIZE );
 
+	//! Открытие текущей директории
 	DIR * currentDir = opendir( currentDirName );
 	if ( !currentDir ) {
 		printf( "Oops! Can't open current directory!\n" );
@@ -61,22 +81,22 @@ int main()
 	}
 
 	const int ARRAY_SIZE = 300;
-	struct file files[ARRAY_SIZE];
-	struct file dirs[ARRAY_SIZE];
+	struct file files[ARRAY_SIZE]; ///< Массив файлов
+	struct file dirs[ARRAY_SIZE]; ///< Массив директорий
 	int filesCount = 0;
 	int dirsCount = 0;
 
 	currentFile = readdir( currentDir );
 	while ( currentFile ) {
-		stat( currentFile->d_name, &fileInfo );
+		stat( currentFile->d_name, &fileInfo ); ///< Получение информации о файле по его имени
 		if ( fileInfo.st_mode & S_IFREG ) {
-			// file
+			//! Файл является обычным
 			files[filesCount].name		= currentFile->d_name;
 			files[filesCount].length	= fileInfo.st_size;
 			++filesCount;
 		}
 		else if ( fileInfo.st_mode & S_IFDIR ) {
-			// dir
+			//! Файл является директорией
 			dirs[dirsCount].name		= currentFile->d_name;
 			dirs[dirsCount].length		= -1;
 			++dirsCount;
@@ -86,6 +106,8 @@ int main()
 	closedir( currentDir );
 
 	sort( files, filesCount );
+
+	//! Вывод результатов
 	printHead();
 	printArray( dirs, dirsCount );
 	printArray( files, filesCount );
