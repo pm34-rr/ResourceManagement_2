@@ -102,7 +102,7 @@ int main()
 			files[filesCount].length	= fileInfo.st_size;
 			++filesCount;
 			if ( filesCount > ARRAY_SIZE ) {
-				printf( "Oops! Too much files!" );
+				printf( "Oops! Too much files!\n" );
 				return 2;
 			}
 		}
@@ -112,7 +112,7 @@ int main()
 			dirs[dirsCount].length		= -1;
 			++dirsCount;
 			if ( dirsCount > ARRAY_SIZE ) {
-				printf( "Oops! Too much directories!" );
+				printf( "Oops! Too much directories!\n" );
 				return 2;
 			}
 		}
