@@ -1,3 +1,10 @@
+/*!
+ * \brief	Данная программа может быть использована для просмотра содержимого текущей директории. Содержимое сортируется по размеру.
+ * \author	Рогоза А. А.
+ * \author	Романов С. А.
+ * \date	11/02/2016
+ */
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -94,12 +101,20 @@ int main()
 			files[filesCount].name		= currentFile->d_name;
 			files[filesCount].length	= fileInfo.st_size;
 			++filesCount;
+			if ( filesCount > ARRAY_SIZE ) {
+				printf( "Oops! Too much files!" );
+				return 2;
+			}
 		}
 		else if ( fileInfo.st_mode & S_IFDIR ) {
 			//! Файл является директорией
 			dirs[dirsCount].name		= currentFile->d_name;
 			dirs[dirsCount].length		= -1;
 			++dirsCount;
+			if ( dirsCount > ARRAY_SIZE ) {
+				printf( "Oops! Too much directories!" );
+				return 2;
+			}
 		}
 		currentFile = readdir( currentDir );
 	}
